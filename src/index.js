@@ -1,21 +1,21 @@
 import './styles.css';
 const searchForm = document.querySelector('.js-search-form');
-const articlesContainer = document.querySelector('.js-articles');
+const countryList = document.querySelector('.js-countries');
 const baseUrl = 'https://restcountries.eu/rest/v2/name/';
 
 export default {
   fetchArticles(query) {
-    const requestParams = `${query}`;
-    return fetch(baseUrl + requestParams).then(res => res.json());
+    const request = `${query}`;
+    return fetch(baseUrl + request).then(res => res.json());
   },
 };
 
-searchForm.addEventListener('input', debounce(countrySearchInputHandler, 500));
+searchForm.addEventListener('input', debounce(searchInputNotifier, 500));
 
-function countrySearchInputHandler(e) {
+function searchInputNotifier(e) {
   e.preventDefault();
-  clearArticlesContainer();
-   const searchQuery = e.target.value;
+  clearCountryList();
+ const searchQuery = e.target.value;
   
   
   countrySearch.fetchArticles(searchQuery).then(data => {
@@ -29,24 +29,24 @@ function countrySearchInputHandler(e) {
           text: "No country has been found. Please enter a more specific query!"
       });
       } else if (data.length === 1) {
-          buildListMarkup(data, articlesOneCountry);
+          buildListMarkup(data, country);
       } else if (data.length <= 10) {
-          buildListMarkup(data, countryList);
+          buildListMarkup(data, countries);
       }
   })
-  .catch(Error => {
-      Error({
-          text: "You must enter query parameters!"
+  .catch(error => {
+      error({
+          notification: "You must enter query parameters!"
       });
-      console.log(Error)
+      console.log(error)
   })
 }
 
-function buildListMarkup(countryes, template) {
-  const markup = countryes.map(count => template(count)).join();
-  refs.articlesContainer.insertAdjacentHTML('afterbegin', markup)
+function buildListMarkup(countries, template) {
+  const markup = countries.map(number => template(number)).join();
+  countryList.insertAdjacentHTML('beforeend', markup)
 }
 
-function clearArticlesContainer() {
-  refs.articlesContainer.innerHTML = '';
+function clearCountryList() {
+    countryList.innerHTML = '';
 }
